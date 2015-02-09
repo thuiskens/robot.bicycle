@@ -31,13 +31,14 @@ in a [Google Drive spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0Asn
 - Real time operating system [ChibiOS/RT](http://www.chibios.org/)
 
 ## GNU Toolchain
-To compile the code that runs on the microcontroller, I've been using two GCC
-Arm toolchains to build the firmware. One is the [GNU Tools for ARM Embedded
-Processors](https://launchpad.net/gcc-arm-embedded), which is maintained by
-ARM. The other is the Linaro toolchain, which is updated more frequently but
-not necessarily customized for embedded chips. I maintain a [simple
-script](https://github.com/hazelnusse/arm-toolchain) to download and build the
-tools in the Linaro toolchain and it seems to work well.
+To compile the code that runs on the microcontroller, the following toolchain
+is used:
+[GNU Tools for ARM Embedded Processors](https://launchpad.net/gcc-arm-embedded),
+which is maintained by ARM.
+
+As most computers will be running a 64-bit kernel, libraries for ia32/i386
+architecture will need to be installed if not already. For recent versions of
+Ubuntu, you can simply install the `gcc-multilib` package.
 
 ## Build System
 To compile the firmware which runs on the bicycle, type:
