@@ -41,6 +41,9 @@ mark_as_advanced(CLEAR MATLAB_ROOT)
 add_subdirectory(submodules/libbicycle)
 include_directories(submodules/libbicycle/inc)
 
+add_subdirectory(submodules/libcontrol)
+include_directories(submodules/libcontrol/include)
+
 # build options
 option(BUILD_DATA_EXPLORER "Build Data Explorer." ON)
 option(BUILD_DESIGN_TOOLS "Build observer and parameter check tools." ON)
