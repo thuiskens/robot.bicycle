@@ -30,37 +30,58 @@ in a [Google Drive spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0Asn
 - Debugging and flashing software [OpenOCD](http://openocd.berlios.de/web/)
 - Real time operating system [ChibiOS/RT](http://www.chibios.org/)
 
-## GNU Toolchain
+## Toolchain
 To compile the code that runs on the microcontroller, the following toolchain
 is used:
 [GNU Tools for ARM Embedded Processors](https://launchpad.net/gcc-arm-embedded),
 which is maintained by ARM.
+
+The version being used is 4.9-2014-q4-major.
 
 As most computers will be running a 64-bit kernel, libraries for ia32/i386
 architecture will need to be installed if not already. For recent versions of
 Ubuntu, you can simply install the `gcc-multilib` package.
 
 ## Build System
-To compile the firmware which runs on the bicycle, type:
 
-    $ cd firmware
-    $ mkdir build
-    $ cd build
-    $ cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchain-arm-none-eabi.cmake
-    $ make
+### Firmware
+The firmware which runs on the bicycle can be built using CMake. After the
+initial build tree is constructed, build options can be changed using a GUI
+with `ccmake` as build information is saved to a cache file. To compile the
+firmware, CMAKE_TOOLCHAIN_FILE must be defined in the initial call to `cmake`
+as the compilers cannot be changed after a build tree is created. Without
+specifying a toolchain, CMake will assume the target system to be the same as
+the build host and preset some CMake variables, include the compilers. In order
+to cross compile, the following command should be used:
 
-You will need to modify the CMake toolchain file to point to your toolchain
-path. You can view and change build options using `ccmake` instead of `cmake`.
+    $ cmake -DCMAKE_TOOLCHAIN_FILE=<path-to-toolchain-file> <path-to-source>
 
-To build the dataprocessing code, ensure you have CMake installed, then type:
+Here is an example:
 
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make
+    oliver@arcturus ~/repos/robot.bicycle/firmware$ mkdir build
+    oliver@arcturus ~/repos/robot.bicycle/firmware$ cd build/
+    oliver@arcturus ~/repos/robot.bicycle/firmware/build$ cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain-arm-none-eabi.cmake ..
+    oliver@arcturus ~/repos/robot.bicycle/firmware/build$ make -j4
+
+### Dataprocessing Code
+The dataprocessing code is also built using CMake but done so from the project root directory.
+
+    oliver@arcturus ~/repos/robot.bicycle$ mkdir build
+    oliver@arcturus ~/repos/robot.bicycle$ cd build/
+    oliver@arcturus ~/repos/robot.bicycle/build$ cmake ..
+    oliver@arcturus ~/repos/robot.bicycle/build$ make -j4
+
+To build Matlab dependent targets, Matlab must be installed and the root
+directory must be passed to CMake. This can be done as an argument to `cmake`
+or via `ccmake`.
 
 ## Acknowledgements
-This project has been supported in part by NSF Award #0928339.  I am grateful
-for the help of Derek Pell, Kenny Koller, Oliver Lee, Kenny Lyons, and the rest
-of my lab mates: Bo Fu, Colin Smith, Andrew Kickertz, Jason Moore, Ziqi Yin,
-and Gilbert Gede.
+This project has been supported in part by NSF Award #0928339.
+
+This repository is forked of a project started by Dale Lukas Peterson, which
+can be found here:
+https://github.com/hazelnusse/robot.bicycle
+
+A number of people have contributed this project including:
+Dale Lukas Peterson, Derek Pell, Kenny Koller, Kenny Lyons, Bo Fu, Colin Smith,
+Andrew Kickertz, Jason Moore, Ziqi Yin, and Gilbert Gede.
