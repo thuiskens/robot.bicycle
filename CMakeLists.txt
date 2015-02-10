@@ -39,6 +39,7 @@ endif()
 mark_as_advanced(CLEAR MATLAB_ROOT)
 
 add_subdirectory(submodules/libbicycle)
+include_directories(submodules/libbicycle/inc)
 
 # build options
 option(BUILD_DATA_EXPLORER "Build Data Explorer." ON)

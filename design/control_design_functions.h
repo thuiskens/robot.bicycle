@@ -2,7 +2,7 @@
 #define CONTROL_DESIGN_FUNCTIONS_H
 
 #include <Eigen/Dense>
-#include "bicycle/bicycle.h"
+#include "bicycle.h"
 
 struct model_data {
   double theta_R_dot;
