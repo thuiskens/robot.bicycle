@@ -11,7 +11,7 @@
 namespace hardware {
 
 const uint8_t ccr_channel = 1;              // PWM Channel 1
-const float max_current = 24.0f;            // Copley Controls ACJ-090-36
+const float max_current = 24.0f;            // Copley Controls ADP-090-36
                                             // Configured 24.0A peak, 12.0A
                                             // continuous
 const float torque_constant = 6.654987675770698f;  // Experimentally determined, N*m/A
