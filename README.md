@@ -78,7 +78,7 @@ or via `ccmake`.
 ## Acknowledgements
 This project has been supported in part by NSF Award #0928339.
 
-This repository is forked of a project started by Dale Lukas Peterson, which
+This repository is forked from a project started by Dale Lukas Peterson, which
 can be found here:
 https://github.com/hazelnusse/robot.bicycle
 
