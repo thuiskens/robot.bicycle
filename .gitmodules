@@ -7,3 +7,6 @@
 [submodule "submodules/libbicycle"]
 	path = submodules/libbicycle
 	url = git@github.com:oliverlee/libbicycle
+[submodule "submodules/libcontrol"]
+	path = submodules/libcontrol
+	url = git@github.com:oliverlee/libcontrol.git
