@@ -43,6 +43,14 @@ architecture will need to be installed if not already. For recent versions of
 Ubuntu, you can simply install the `gcc-multilib` package.
 
 ## Build System
+This project uses a number of other projects which are included as submodules.
+Some of the submodules (e.g. libbicycle) also contain their own submodules.
+However, none of the nested submodules are necessary for building and recursive
+initialization can be avoided. You can update the submodules with:
+
+    $ git submodule update --init
+
+which will also initialize the submodules if not yet done.
 
 ### Firmware
 The firmware which runs on the bicycle can be built using CMake. After the
