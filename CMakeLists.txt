@@ -15,6 +15,12 @@ include(${QT_USE_FILE})
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
 find_package(Threads REQUIRED)
 
+# check if protobuf compiler is found
+# any string ending in -NOTFOUND is false in CMake
+if(NOT PROTOBUF_PROTOC_EXECUTABLE)
+    message(SEND_ERROR "Google protobuf compiler not found.")
+endif()
+
 # set default build type to debug
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING
