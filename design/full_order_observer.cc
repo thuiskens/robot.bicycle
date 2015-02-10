@@ -2,7 +2,7 @@
 #include <cmath>
 #include <vector>
 #include <Eigen/Dense>
-#include "bicycle/bicycle.h"
+#include "bicycle.h"
 #include "control_design_functions.h"
 #include "firmware_generator.h"
 #include "robot_bicycle_parameters.h"

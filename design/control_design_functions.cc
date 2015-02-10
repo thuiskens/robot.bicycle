@@ -5,7 +5,7 @@
 #include <iostream>
 #include <tuple>
 
-#include <control/control.h>
+#include <control.h>
 
 #include "robot_bicycle_parameters.h"
 #include "control_design_functions.h"

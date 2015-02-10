@@ -1,8 +1,8 @@
 #ifndef ROBOT_BICYCLE_PARAMETERS_H
 #define ROBOT_BICYCLE_PARAMETERS_H
 
-#include "bicycle/bicycle.h"
-#include "bicycle/wheelassemblygyrostat.h"
+#include "bicycle.h"
+#include "wheelassemblygyrostat.h"
 
 namespace bicycle {
 

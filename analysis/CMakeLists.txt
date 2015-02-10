@@ -1,3 +1,5 @@
+project(ROBOT_BICYCLE_DATA_EXPLORER CXX C)
+
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS sample.proto)

@@ -1,4 +1,4 @@
-#include "bicycle/bicycle.h"
+#include "bicycle.h"
 #include "robot_bicycle_parameters.h"
 
 int main(int argc, char ** argv)
