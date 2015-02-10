@@ -19,4 +19,4 @@ data/physicalparameters/RawData/Images/
 *.log
 *.out
 *.pdf
-
+build*
