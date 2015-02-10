@@ -1,3 +1,5 @@
+project(ROBOT_BICYCLE_DESIGN CXX C)
+
 include_directories(${EIGEN3_INCLUDE_DIR})
 if (MATLAB_FOUND)
 include_directories(${MATLAB_INCLUDE_DIR})

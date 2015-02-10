@@ -32,6 +32,14 @@ endif()
 # user to see/set this directory during configuration
 mark_as_advanced(CLEAR MATLAB_ROOT)
 
-add_subdirectory(analysis)
-add_subdirectory(design)
+# build options
+option(BUILD_DATA_EXPLORER "Build Data Explorer." ON)
+option(BUILD_DESIGN_TOOLS "Build observer and parameter check tools." ON)
+
+if(BUILD_DATA_EXPLORER)
+    add_subdirectory(analysis)
+endif()
+if(BUILD_DESIGN_TOOLS)
+    add_subdirectory(design)
+endif()
 
