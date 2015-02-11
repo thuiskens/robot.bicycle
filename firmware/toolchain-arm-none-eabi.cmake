@@ -1,26 +1,41 @@
-#set(CMAKE_SYSTEM_NAME Generic)
-#
-#set(TOOLCHAIN arm-none-eabi)
-#set(CMAKE_FIND_ROOT_PATH "$ENV{HOME}/toolchain")
-#set(TOOLCHAIN_BIN_DIR "${CMAKE_FIND_ROOT_PATH}/bin")
-#set(CMAKE_C_COMPILER "${TOOLCHAIN_BIN_DIR}/${TOOLCHAIN}-gcc")
-#set(CMAKE_CXX_COMPILER "${TOOLCHAIN_BIN_DIR}/${TOOLCHAIN}-g++")
-#
-#set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-#set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-#set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 include(CMakeForceCompiler)
 
-set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_NAME "Generic")
 
-set(TOOLCHAIN arm-none-eabi)
+# Define toolchain name and directory
+set(TOOLCHAIN "arm-none-eabi")
 set(TOOLCHAIN_DIR "$ENV{HOME}/toolchain")
-#set(TOOLCHAIN_DIR "$ENV{HOME}/tools/gcc-arm-none-eabi-4_7-2013q1")
+
+set(TOOLCHAIN_LIB_DIR "${TOOLCHAIN_DIR}/${TOOLCHAIN}/lib")
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_DIR}/bin")
+
+# Specify that the compilers are GNU based
 CMAKE_FORCE_C_COMPILER("${TOOLCHAIN_BIN_DIR}/${TOOLCHAIN}-gcc" GNU)
 CMAKE_FORCE_CXX_COMPILER("${TOOLCHAIN_BIN_DIR}/${TOOLCHAIN}-g++" GNU)
 
+# Only search toolchain directories for libraries and includes, not programs
 set(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN_DIR})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+# Define macros to find packages/programs on the host
+macro(find_host_package)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+    find_package(${ARGN})
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endmacro()
+
+macro(find_host_program)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+    find_program(${ARGN})
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endmacro()
