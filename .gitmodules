@@ -10,3 +10,6 @@
 [submodule "submodules/libcontrol"]
 	path = submodules/libcontrol
 	url = git@github.com:oliverlee/libcontrol.git
+[submodule "firmware/ChibiOS"]
+	path = firmware/ChibiOS
+	url = git@github.com:oliverlee/ChibiOS.git
