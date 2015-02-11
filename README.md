@@ -33,10 +33,9 @@ in a [Google Drive spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0Asn
 ## Toolchain
 To compile the code that runs on the microcontroller, the following toolchain
 is used:
-[GNU Tools for ARM Embedded Processors](https://launchpad.net/gcc-arm-embedded),
-which is maintained by ARM.
+[GNU Tools for ARM Embedded Processors](https://launchpad.net/gcc-arm-embedded)
 
-The version being used is 4.9-2014-q4-major.
+The version used is 4.9-2014-q4-major.
 
 As most computers will be running a 64-bit kernel, libraries for ia32/i386
 architecture will need to be installed if not already. For recent versions of
@@ -72,7 +71,8 @@ Here is an example:
     oliver@arcturus ~/repos/robot.bicycle/firmware/build$ make -j4
 
 ### Dataprocessing Code
-The dataprocessing code is also built using CMake but done so from the project root directory.
+The dataprocessing code is also built using CMake but done so from the project
+root directory.
 
     oliver@arcturus ~/repos/robot.bicycle$ mkdir build
     oliver@arcturus ~/repos/robot.bicycle$ cd build/
@@ -86,9 +86,8 @@ or via `ccmake`.
 ## Acknowledgements
 This project has been supported in part by NSF Award #0928339.
 
-This repository is forked of a project started by Dale Lukas Peterson, which
-can be found here:
-https://github.com/hazelnusse/robot.bicycle
+This repository is forked from a project started by Dale Lukas Peterson. The
+original repo can be found here: https://github.com/hazelnusse/robot.bicycle
 
 A number of people have contributed this project including:
 Dale Lukas Peterson, Derek Pell, Kenny Koller, Kenny Lyons, Bo Fu, Colin Smith,
