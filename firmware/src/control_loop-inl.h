@@ -2,7 +2,7 @@
 #define CONTROL_LOOP_INL_H
 
 #include <cmath>
-#include "board.h"
+#include "pindef.h"
 #include "bitband.h"
 
 namespace hardware {
