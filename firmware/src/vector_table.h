@@ -3,8 +3,17 @@
 
 #include <cstdint>
 
-typedef void (*irq_vector_t)(void);
-struct vectors_t {
+// definitions of irq_vector_t, vectors_t copied from vectors.c
+
+/**
+ * @brief   Type of an IRQ vector.
+ */
+typedef void  (*irq_vector_t)(void);
+
+/**
+ * @brief   Type of a structure representing the whole vectors table.
+ */
+typedef struct {
   uint32_t      *init_stack;
   irq_vector_t  reset_vector;
   irq_vector_t  nmi_vector;
@@ -21,9 +30,8 @@ struct vectors_t {
   irq_vector_t  vector34;
   irq_vector_t  pendsv_vector;
   irq_vector_t  systick_vector;
-  irq_vector_t  vectors[82];
-};
-
+  irq_vector_t  vectors[91];
+} vectors_t;
 
 extern vectors_t _vectors;
 

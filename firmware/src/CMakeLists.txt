@@ -1,54 +1,58 @@
 
-include(${CHIBIOS_ROOT}/tools/cmake/chibios.cmake)
-include(${CHIBIOS_ROOT}/tools/cmake/ext/chprintf.cmake)
-include(${CHIBIOS_ROOT}/tools/cmake/ext/fatfs.cmake)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+set(PROJECT_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/bitband.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/calibration.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/chconf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/constants.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/control_loop.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/control_loop-inl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/encoder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/encoder-inl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/ffconf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/filter.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/fork_motor_controller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gain_schedule.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/halconf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/initialization.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/mcuconf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/motor_controller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/motor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/motor-inl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/MPU6050.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/pindef.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rear_motor_controller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/sample_buffer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/sample_buffer-inl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/sine_table.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/system_commands.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/SystemState.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/test.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/textutilities.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/vector_table.h
 
-set(USE_OPT "-Wall -Wextra -O2 -ggdb3 -fomit-frame-pointer -falign-functions=16 -ffunction-sections -fdata-sections -fno-common")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_OPT} -Wstrict-prototypes")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_OPT} -fno-rtti -fno-exceptions -fno-stack-protector -std=c++11 -nostdlib -nodefaultlibs -nostartfiles")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-warn-mismatch,--gc-sections")
-set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
-
-include_directories(${CMAKE_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-set(ROBOT_BICYCLE_SRCS
-    bitband.h
-    chconf.h
-    Constants.h
-    ffconf.h
-    halconf.h
-    Interrupts.cpp
-    main.cpp
-    mcuconf.h
-    MPU6050.cpp
-    MPU6050_calibration.cpp
-    MPU6050.h
-    PeripheralInit.cpp
-    PeripheralInit.h
-    RearWheel.cpp
-    RearWheel.h
-    RearWheel_priv.h
-    SampleAndControl.cpp
-    SampleAndControl.h
-    SampleAndControl_priv.h
-    stubs.cpp
-    stubs.h
-    SystemCommands.cpp
-    SystemCommands.h
-    textutilities.cpp
-    textutilities.h
-    VectorTable.cpp
-    VectorTable.h
-    YawRateController.cpp
-    YawRateController.h
-    YawRateController_priv.h
-
-    # List GENERATED controller gains here temporarily
-    YawRateController_gains.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/calibration.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/control_loop.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/fork_motor_controller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/fork_schedule.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gain_schedule.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/initialization.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/motor_controller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/motor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MPU6050.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/rear_motor_controller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sample_buffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sine_table.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/system_commands.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/textutilities.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vector_table.cpp
 )
 
+### TODO: Add template file generation to CMake
 # Source file properties (e.g. generated) are only visible to
 # targets added in the same directory.
 ##set(ROBOT_BICYCLE_DESIGN_DIR "${ROBOT_BICYCLE_SOURCE_DIR}/../design")
@@ -75,12 +79,10 @@ set(ROBOT_BICYCLE_SRCS
 ##TODO: Disable controller gains generation until bicycle model modified to
 ##      work with python2.7
 
-set(GENERATED_SRCS ${PROTO_SRCS})
+set(GENERATED_SRCS ${PROTO_SRCS} ${PROTO_HDRS})
 set_source_files_properties(${GENERATED_SRCS} PROPERTIES GENERATED TRUE)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-add_chibios_executable(robot_bicycle ${ROBOT_BICYCLE_SRCS}
-                                     ${CHIBIOS_VARIOUS_SRC}
-                                     ${GENERATED_SRCS})
-add_flash_target(robot_bicycle)
+string(TOLOWER ${PROJECT_NAME} PROJECT_TARGET_NAME)
+add_chibios_executable(${PROJECT_TARGET_NAME}
+    ${PROJECT_SRCS} ${CHIBIOS_VARIOUS_SRC} ${GENERATED_SRCS})
 

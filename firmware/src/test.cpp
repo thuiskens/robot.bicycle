@@ -1,10 +1,12 @@
 #include "hal.h"
+#include "pindef.h"
 #include "test.h"
 #include "encoder.h"
 #include "motor.h"
 #include "rear_motor_controller.h"
 #include "fork_motor_controller.h"
 #include "sample.pb.h"
+
 
 bool test_encoder()
 {
