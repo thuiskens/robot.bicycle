@@ -27,6 +27,7 @@ set(ROBOT_BICYCLE_SRCS
     MPU6050.h
     PeripheralInit.cpp
     PeripheralInit.h
+    pindef.h
     RearWheel.cpp
     RearWheel.h
     RearWheel_priv.h
