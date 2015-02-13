@@ -6,6 +6,12 @@ if (MATLAB_FOUND)
     configure_file(matlab_interface.cc.in matlab_interface.cc)
     set_source_files_properties(matlab_interface.cc PROPERTIES GENERATED TRUE)
 
+    # Check if csh is installed to /bin/csh as this is a requirement of Matlab
+    # engine.
+    if(NOT EXISTS /bin/csh)
+        message(FATAL_ERROR "Matlab engine cannot start without C shell installed to /bin/csh.")
+    endif()
+
     include_directories(${MATLAB_INCLUDE_DIR})
     add_executable(full_order_observer
         control_design_functions.h

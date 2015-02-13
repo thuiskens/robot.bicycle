@@ -6,13 +6,13 @@
 constexpr int buffer_size = 8192;
 
 // Matlab binary path configured with CMake
-// The CMake MATLAB_ROOT_BIN variable is actually the library directory and not
-// the path to the binary itself.
 MatlabInterface::MatlabInterface()
-  : ep_{engOpen("@MATLAB_ROOT_BIN@/../matlab -nosplash")}
+  : ep_{engOpen("@MATLAB_ROOT@/matlab -nosplash -nodisplay")}
 {
-  if (!ep_)
+  if (!ep_) {
     std::cerr << "Can't start Matlab engine.\n";
+    exit(EXIT_FAILURE);
+  }
 }
 
 MatlabInterface::~MatlabInterface()
