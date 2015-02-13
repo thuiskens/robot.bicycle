@@ -1,5 +1,5 @@
-project(ROBOT_BICYCLE_HOST CXX C)
 cmake_minimum_required(VERSION 2.8.8)
+project(ROBOT_BICYCLE_HOST CXX C)
 
 set(CMAKE_MODULE_PATH ${ROBOT_BICYCLE_HOST_SOURCE_DIR}/cmake/Modules)
 
