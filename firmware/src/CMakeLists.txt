@@ -1,7 +1,7 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-set(PROJECT_SRCS
+set(PROJECT_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/bitband.h
     ${CMAKE_CURRENT_SOURCE_DIR}/calibration.h
     ${CMAKE_CURRENT_SOURCE_DIR}/chconf.h
@@ -79,10 +79,10 @@ set(PROJECT_SRCS
 ##TODO: Disable controller gains generation until bicycle model modified to
 ##      work with python2.7
 
-set(GENERATED_SRCS ${PROTO_SRCS} ${PROTO_HDRS})
-set_source_files_properties(${GENERATED_SRCS} PROPERTIES GENERATED TRUE)
+set_source_files_properties(${GENERATED_SRC} PROPERTIES GENERATED TRUE)
 
 string(TOLOWER ${PROJECT_NAME} PROJECT_TARGET_NAME)
 add_chibios_executable(${PROJECT_TARGET_NAME}
-    ${PROJECT_SRCS} ${CHIBIOS_VARIOUS_SRC} ${GENERATED_SRCS})
+    ${PROJECT_SRC} ${CHIBIOS_VARIOUS_SRC} ${GENERATED_SRC})
+add_dependencies(${PROJECT_TARGET_NAME} generate_proto_sources)
 
