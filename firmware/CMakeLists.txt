@@ -80,16 +80,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${NANOPB_SRC_ROOT_FOLDER}/extra")
 find_host_package(Nanopb REQUIRED)
 include_directories(${NANOPB_INCLUDE_DIRS})
 
-## TODO: run make in nanopb directory
 nanopb_generate_cpp(PROTO_SRCS PROTO_HDRS
     "${PROJECT_SOURCE_DIR}/../proto/sample.proto")
 # proto files are created in the current binary directory
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-## FIXME: don't do this
-add_custom_target(generate_proto ALL DEPENDS ${PROTO_SRCS} ${PROTO_HDRS})
-#set_source_files_properties(${PROTO_SRCS} ${PROTO_HDRS}
-#    PROPERTIES GENERATED TRUE)
+set(GENERATED_SRC ${PROTO_SRCS} ${PROTO_HDRS})
+add_custom_target(generate_proto_sources DEPENDS ${PROTO_SRCS} ${PROTO_HDRS})
 
 ### TODO: Add OPENOCD flashing options
 # include(${CHIBIOS_ROOT}/tools/cmake/openocd.cmake)
@@ -116,14 +112,6 @@ set(CHIBIOS_VARIOUS_SRC
     ${CHIBIOS_SOURCE_DIR}/os/various/shell.c
     ${CHIBIOS_SOURCE_DIR}/os/various/shell.h
     ${CHIBIOS_SOURCE_DIR}/os/various/syscalls.c)
-
-#include(ExternalProject)
-#ExternalProject_Add(ROBOT_BICYCLE_HOST
-#    PREFIX "${ROBOT_BICYCLE_BINARY_DIR}/host"
-#    SOURCE_DIR "${ROBOT_BICYCLE_SOURCE_DIR}/.."
-#    CMAKE_ARGS "-DPYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}"
-#    "-DPROTO_FILES=${PROTO_FILES}" "-DPROTO_OUTPUT_DIR=${PROTO_OUTPUT_DIR}"
-#    INSTALL_COMMAND "")
 
 ## Include singleton directories since it only contains headers
 include_directories(${ROBOT_BICYCLE_SOURCE_DIR}/Singleton)
