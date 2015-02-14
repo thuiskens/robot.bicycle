@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include <iostream>
 #include <Eigen/Dense>
 #include "bicycle.h"
 #include "control_design_functions.h"
@@ -9,6 +10,7 @@
 
 int main(int argc, char ** argv)
 {
+  std::cout << "Initializing robot bicycle model..." << std::endl;
   bicycle::Bicycle rb = bicycle::robot_bicycle();
 
   design_parameters params;
@@ -49,6 +51,9 @@ int main(int argc, char ** argv)
 
   std::vector<model_data> md = design_controller(params, rb);
   std::sort(md.begin(), md.end());
+  std::cout << "Generating sources..." << std::endl;
   firmware_generator(md);
+
+  return EXIT_SUCCESS;
 }
 

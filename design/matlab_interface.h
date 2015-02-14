@@ -2,7 +2,7 @@
 #define MATLAB_INTERFACE
 #include <string>
 #include <Eigen/Dense>
-#include "engine.h"
+#include <engine.h>
 
 class MatlabInterface {
  public:
