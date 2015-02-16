@@ -13,7 +13,7 @@ if(NOT CMAKE_BUILD_TYPE)
         FORCE)
 endif()
 
-# find matlab if root directory is provided
+# Find Matlab if root directory is provided
 set(MATLAB_ROOT "" CACHE FILEPATH "Matlab root directory.")
 find_package(Matlab)
 if(NOT MATLAB_FOUND)
@@ -22,6 +22,15 @@ endif()
 # Matlab find package script marks MATLAB_ROOT as advanced, but we want the
 # user to see/set this directory during configuration
 mark_as_advanced(CLEAR MATLAB_ROOT)
+
+set(CMAKE_TOOLCHAIN_FILE "" CACHE FILEPATH "Path to CMake toolchain file.")
+if(NOT CMAKE_TOOLCHAIN_FILE)
+    message(STATUS "CMAKE_TOOLCHAIN_FILE not specified. Default toolchain options will be used.")
+endif()
+if(NOT EXISTS ${CMAKE_TOOLCHAIN_FILE})
+    message(WARNING
+        "CMAKE_TOOLCHAIN_FILE does not exist. Please provide a valid file or default toolchain options will be used.")
+endif()
 
 ## Add bicycle and control library subdirectories
 add_subdirectory(submodules/libbicycle)
@@ -41,8 +50,10 @@ if(ROBOT_BICYCLE_BUILD_FIRMWARE)
     set(ROBOT_BICYCLE_FIRMWARE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/firmware)
     set_directory_properties(PROPERTIES
         ADDITIONAL_MAKE_CLEAN_FILES ${ROBOT_BICYCLE_FIRMWARE_BINARY_DIR})
-    set(CMAKE_TOOLCHAIN_FILE
-        ${ROBOT_BICYCLE_FIRMWARE_SOURCE_DIR}/toolchain-arm-none-eabi.cmake)
+    if(NOT CMAKE_TOOLCHAIN_FILE OR NOT EXISTS ${CMAKE_TOOLCHAIN_FILE})
+        set(CMAKE_TOOLCHAIN_FILE
+            ${ROBOT_BICYCLE_FIRMWARE_SOURCE_DIR}/toolchain-arm-none-eabi.cmake)
+    endif()
 
     # Define build type
     set(ROBOT_BICYCLE_FIRMWARE_BUILD_TYPE "Debug" CACHE STRING
