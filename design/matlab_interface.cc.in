@@ -7,7 +7,7 @@ constexpr int buffer_size = 8192;
 
 // Matlab binary path configured with CMake
 MatlabInterface::MatlabInterface()
-  : ep_{engOpen("@MATLAB_ROOT@/matlab -nosplash -nodisplay")}
+  : ep_{engOpen("@MATLAB_ROOT@/bin/matlab -nosplash -nodisplay")}
 {
   if (!ep_) {
     std::cerr << "Can't start Matlab engine.\n";
