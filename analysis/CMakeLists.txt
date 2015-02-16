@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ROBOT_BICYCLE_DATA_EXPLORER CXX)
 
 option(ROBOT_BICYCLE_BUILD_DATA_EXPLORER

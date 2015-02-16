@@ -1,18 +1,8 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ROBOT_BICYCLE_DESIGN CXX C)
 
 find_package(Eigen3 3.1.2)
 include_directories(${EIGEN3_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-
-# find matlab if root directory is provided
-set(MATLAB_ROOT "" CACHE FILEPATH "Matlab root directory.")
-find_package(Matlab)
-if(NOT MATLAB_FOUND)
-  message("MATLAB_ROOT must be defined if you want to build Matlab dependent targets.")
-endif()
-# Matlab find package script marks MATLAB_ROOT as advanced, but we want the
-# user to see/set this directory during configuration
-mark_as_advanced(CLEAR MATLAB_ROOT)
 
 option(ROBOT_BICYCLE_DESIGN_BUILD_FULL_ORDER_OBSERVER
     "Build Robot Bicycle Full Order Observer design tool." ON)
