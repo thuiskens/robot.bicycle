@@ -67,4 +67,4 @@ string(TOLOWER ${PROJECT_NAME} PROJECT_TARGET_NAME)
 add_chibios_executable(${PROJECT_TARGET_NAME}
     ${PROJECT_SRC} ${CHIBIOS_VARIOUS_SRC} ${GENERATED_SRC})
 add_dependencies(${PROJECT_TARGET_NAME} generate_proto_sources)
-
+openocd_flash_target(${PROJECT_TARGET_NAME})

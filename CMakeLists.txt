@@ -59,6 +59,25 @@ if(ROBOT_BICYCLE_BUILD_FIRMWARE)
     set(ROBOT_BICYCLE_FIRMWARE_BUILD_TYPE "Debug" CACHE STRING
         "Choose the type of build, options are: Debug, Release.")
 
+    # Flashing options
+    option(OPENOCD_FLASH_TARGET "Flash target to board after build." OFF)
+    option(OPENOCD_FLASH_TARGET_AND_RUN "Flash target to board and run after build." OFF)
+    # try to locate OpenOCD
+    if(OPENOCD_FLASH_TARGET OR OPENOCD_FLASH_TARGET_AND_RUN)
+        find_program(
+            OPENOCD_EXE
+            NAMES openocd openocd-0.6.0 openocd-0.6.1 openocd-0.8.0
+            PATHS ${OPENOCD_ROOT}
+            DOC "OpenOCD program"
+        )
+        if(NOT OPENOCD_EXE)
+            message(WARNING
+                "OpenOCD not found. Target will not be flashed after being built.")
+        else()
+            message(STATUS "OpenOCD found. Using ${OPENOCD_EXE}")
+        endif()
+    endif()
+
     # Define the generated gain schedule files and the generation command.
     set(GENERATED_SCHEDULE_SOURCE_DIR
         ${ROBOT_BICYCLE_DESIGN_BINARY_DIR}/generated)
@@ -91,6 +110,9 @@ if(ROBOT_BICYCLE_BUILD_FIRMWARE)
         CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
         "-DCMAKE_BUILD_TYPE=${ROBOT_BICYCLE_FIRMWARE_BUILD_TYPE}"
         "-DGENERATED_SCHEDULE_SOURCE_DIR=${GENERATED_SCHEDULE_SOURCE_DIR}"
+        "-DOPENOCD_FLASH_TARGET=${OPENOCD_FLASH_TARGET}"
+        "-DOPENOCD_FLASH_AND_RUN_TARGET=${OPENOCD_FLASH_AND_RUN_TARGET}"
+        "-DOPENOCD_EXE=${OPENOCD_EXE}"
         INSTALL_COMMAND "")
     ExternalProject_Add_Step(robot_bicycle_firmware
         generate_schedule_sources

@@ -117,8 +117,21 @@ nanopb_generate_cpp(PROTO_SRCS PROTO_HDRS
 set(GENERATED_SRC ${GENERATED_SRC} ${PROTO_SRCS} ${PROTO_HDRS})
 add_custom_target(generate_proto_sources DEPENDS ${PROTO_SRCS} ${PROTO_HDRS})
 
-### TODO: Add OPENOCD flashing options
-# include(${CHIBIOS_ROOT}/tools/cmake/openocd.cmake)
+## Add OPENOCD flashing options
+if(OPENOCD_FLASH_TARGET OR OPENOCD_FLASH_AND_RUN_TARGET)
+    include(${CHIBIOS_SOURCE_DIR}/tools/cmake/openocd.cmake)
+    set(OPENOCD_INTERFACE_CFG ${CMAKE_CURRENT_SOURCE_DIR}/openocd.cfg)
+endif()
+
+macro(openocd_flash_target target_to_flash)
+    if(OPENOCD_EXE)
+        if(OPENOCD_FLASH_AND_RUN_TARGET)
+            add_flash_and_run_target(${target_to_flash})
+        elseif(OPENOCD_FLASH_TARGET)
+            add_flash_target(${target_to_flash})
+        endif()
+    endif()
+endmacro()
 
 ## Setup ChibiOS
 set(CHIBIOS_CMAKE_DIR "${CHIBIOS_SOURCE_DIR}/tools/cmake")
