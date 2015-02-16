@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8.11)
-project(ROBOT_BICYCLE CXX C)
+cmake_minimum_required(VERSION 2.8.12)
+project(ROBOT_BICYCLE_FIRMWARE CXX C)
 
 ## Define flags used with different build options
 # Clear existing compilation and linking flags
@@ -12,6 +12,45 @@ set(CMAKE_EXE_LINKER_FLAGS)
 if(NOT CMAKE_TOOLCHAIN_FILE)
     message(FATAL_ERROR
         "CMAKE_TOOLCHAIN_FILE must be defined when building ${PROJECT_NAME}.")
+endif()
+
+# Only search toolchain directories for libraries and includes, not programs
+set(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN_DIR})
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+# Define macros to find packages/programs on the host
+macro(find_host_package)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+    find_package(${ARGN})
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endmacro()
+
+macro(find_host_program)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+    find_program(${ARGN})
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endmacro()
+
+# Provide location of generated gain schedule files as an input argument.
+# These are actually created before the configure step by the root CMake
+# script.
+if(GENERATED_SCHEDULE_SOURCE_DIR)
+    file(GLOB GENERATED_SRC
+        ${GENERATED_SCHEDULE_SOURCE_DIR}/*.cpp
+        ${GENERATED_SCHEDULE_SOURCE_DIR}/*.h)
+else()
+    message(SEND_ERROR
+        "Directory for generated gain schedule files not specified.")
 endif()
 
 # Debug/Release flags. Force values as the user should not be able to override.
@@ -61,14 +100,6 @@ set(CMAKE_CXX_LINK_EXECUTABLE
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake/Modules")
 find_package(PythonInterp 2.7 REQUIRED)
 
-### TODO: Add template file generation to CMake
-## find python and modules
-#find_package(PythonModule)
-#find_python_module(jinja2 REQUIRED)
-#find_python_module(numpy REQUIRED)
-#find_python_module(scipy REQUIRED)
-#find_python_module(control REQUIRED)
-
 ## Define external project directories
 set(CHIBIOS_SOURCE_DIR "${PROJECT_SOURCE_DIR}/ChibiOS")
 set(NANOPB_SOURCE_DIR "${PROJECT_SOURCE_DIR}/nanopb")
@@ -83,8 +114,7 @@ include_directories(${NANOPB_INCLUDE_DIRS})
 nanopb_generate_cpp(PROTO_SRCS PROTO_HDRS
     "${PROJECT_SOURCE_DIR}/../proto/sample.proto")
 # proto files are created in the current binary directory
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-set(GENERATED_SRC ${PROTO_SRCS} ${PROTO_HDRS})
+set(GENERATED_SRC ${GENERATED_SRC} ${PROTO_SRCS} ${PROTO_HDRS})
 add_custom_target(generate_proto_sources DEPENDS ${PROTO_SRCS} ${PROTO_HDRS})
 
 ### TODO: Add OPENOCD flashing options
@@ -114,7 +144,7 @@ set(CHIBIOS_VARIOUS_SRC
     ${CHIBIOS_SOURCE_DIR}/os/various/syscalls.c)
 
 ## Include singleton directories since it only contains headers
-include_directories(${ROBOT_BICYCLE_SOURCE_DIR}/Singleton)
+include_directories(${ROBOT_BICYCLE_FIRMWARE_SOURCE_DIR}/Singleton)
 
 ## Enter src directory and build project
-add_subdirectory(${ROBOT_BICYCLE_SOURCE_DIR}/src)
+add_subdirectory(${ROBOT_BICYCLE_FIRMWARE_SOURCE_DIR}/src)

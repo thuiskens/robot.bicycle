@@ -42,7 +42,10 @@ Ubuntu, you can simply install the `gcc-multilib` package.
 
 The CMake toolchain file in this project assumes the archive has been extracted
 to $ENV{HOME}/toolchain. If it exists in a different location, the toolchain
-file will need to be modified.
+file will need to be modified or alternative toolchain file must be provided.
+
+To compile the code that runs on the host, a version of `gcc` that supports the
+C++11 standard must be provided.
 
 ## Build System
 This project uses a number of other projects which are included as submodules.
@@ -54,37 +57,32 @@ initialization can be avoided. You can update the submodules with:
 
 which will also initialize the submodules if not yet done.
 
-### Firmware
-The firmware which runs on the bicycle can be built using CMake. After the
-initial build tree is constructed, build options can be changed using a GUI
-with `ccmake` as build information is saved to a cache file. To compile the
-firmware, CMAKE_TOOLCHAIN_FILE must be defined in the initial call to `cmake`
-as the compilers cannot be changed after a build tree is created. Without
-specifying a toolchain, CMake will assume the target system to be the same as
-the build host and preset some CMake variables, include the compilers. In order
-to cross compile, the following command should be used:
-
-    $ cmake -DCMAKE_TOOLCHAIN_FILE=<path-to-toolchain-file> <path-to-source>
-
-Here is an example:
-
-    oliver@arcturus ~/repos/robot.bicycle/firmware$ mkdir build
-    oliver@arcturus ~/repos/robot.bicycle/firmware$ cd build/
-    oliver@arcturus ~/repos/robot.bicycle/firmware/build$ cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain-arm-none-eabi.cmake ..
-    oliver@arcturus ~/repos/robot.bicycle/firmware/build$ make -j4
-
-### Dataprocessing Code
-The dataprocessing code is also built using CMake but done so from the project
-root directory.
+### Dataprocessing and Firmware
+This project builds a number of different tools. To build, simply call `cmake`
+to generate the project makefiles, and then call `make`. Here is an example:
 
     oliver@arcturus ~/repos/robot.bicycle$ mkdir build
     oliver@arcturus ~/repos/robot.bicycle$ cd build/
     oliver@arcturus ~/repos/robot.bicycle/build$ cmake ..
     oliver@arcturus ~/repos/robot.bicycle/build$ make -j4
 
-To build Matlab dependent targets, Matlab must be installed and the root
-directory must be passed to CMake. This can be done as an argument to `cmake`
-or via `ccmake`.
+However, a number of the project targets depend on Matlab and will only be
+built if Matlab is installed and MATLAB_ROOT is defined in CMake. This can be
+done using `ccmake` after the initial build tree is created to modify the cache
+settings
+
+    oliver@arcturus ~/repos/robot.bicycle/build$ ccmake .
+
+or by passing it as an argument to `cmake`
+
+    oliver@arcturus ~/repos/robot.bicycle/build$ cmake -DMATLAB_ROOT=/home/oliver/matlab/r2014 ..
+
+If a toolchain is not specified, CMake will assume the target system to be the
+same as the build host and preset some CMake variables which cannot be changed,
+including the compilers. As cross-compilation is used to build the firmware,
+the firmware CMake project is called as an external project and a file with
+toolchain information is passed as a build configuration argument. See
+`firmware/toolchain-arm-none-eabi.cmake` for an example toolchain file.
 
 ## Acknowledgements
 This project has been supported in part by NSF Award #0928339.
