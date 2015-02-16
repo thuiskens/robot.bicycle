@@ -59,9 +59,9 @@ set(CMAKE_C_FLAGS_DEBUG "-ggdb3 -O0" CACHE
     STRING "Flags used by the compiler during debug builds." FORCE)
 set(CMAKE_CXX_FLAGS_DEBUG "-ggdb3 -O0" CACHE
     STRING "Flags used by the compiler during debug builds." FORCE)
-set(CMAKE_C_FLAGS_RELEASE "Os -DNDEBUG" CACHE
+set(CMAKE_C_FLAGS_RELEASE "-Os -DNDEBUG" CACHE
     STRING "Flags used by the compiler during release builds." FORCE)
-set(CMAKE_CXX_FLAGS_RELEASE "Os -DNDEBUG" CACHE
+set(CMAKE_CXX_FLAGS_RELEASE "-Os -DNDEBUG" CACHE
     STRING "Flags used by the compiler during release builds." FORCE)
 
 # Set the default build type to Debug if not specified.
