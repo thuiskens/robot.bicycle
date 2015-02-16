@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(ROBOT_BICYCLE CXX C)
+project(ROBOT_BICYCLE_FIRMWARE CXX C)
 
 ## Define flags used with different build options
 # Clear existing compilation and linking flags
@@ -144,7 +144,7 @@ set(CHIBIOS_VARIOUS_SRC
     ${CHIBIOS_SOURCE_DIR}/os/various/syscalls.c)
 
 ## Include singleton directories since it only contains headers
-include_directories(${ROBOT_BICYCLE_SOURCE_DIR}/Singleton)
+include_directories(${ROBOT_BICYCLE_FIRMWARE_SOURCE_DIR}/Singleton)
 
 ## Enter src directory and build project
-add_subdirectory(${ROBOT_BICYCLE_SOURCE_DIR}/src)
+add_subdirectory(${ROBOT_BICYCLE_FIRMWARE_SOURCE_DIR}/src)

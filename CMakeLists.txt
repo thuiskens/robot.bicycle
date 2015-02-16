@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(ROBOT_BICYCLE_HOST CXX C)
+project(ROBOT_BICYCLE CXX C)
 
-set(CMAKE_MODULE_PATH ${ROBOT_BICYCLE_HOST_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_MODULE_PATH ${ROBOT_BICYCLE_SOURCE_DIR}/cmake/Modules)
 
 # require c++11 support in C++ compiler
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 ${CMAKE_CXX_FLAGS}")
