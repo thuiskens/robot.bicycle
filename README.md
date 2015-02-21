@@ -30,6 +30,22 @@ in a [Google Drive spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0Asn
 - Debugging and flashing software [OpenOCD](http://openocd.berlios.de/web/)
 - Real time operating system [ChibiOS/RT](http://www.chibios.org/)
 
+## Dependencies
+The following libraries are necessary for building all (but not some) of the
+executables in this project:
+- Eigen 3
+- LAPACKE
+- FFTW
+- Qt4
+- Google Protocol Buffers for C++ and Python, and compiler
+
+These can be found in the Ubuntu repositories as:
+
+    libeigen3-dev liblapacke-dev libfftw3-dev libqt4-def libprotobuf-dev
+    protobuf-compiler python-protobuf
+
+This project also depends on Matlab.
+
 ## Toolchain
 To compile the code that runs on the microcontroller, the following toolchain
 is used:
