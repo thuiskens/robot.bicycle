@@ -3,7 +3,7 @@
 	url = git://github.com/hazelnusse/Singleton.git
 [submodule "firmware/nanopb"]
 	path = firmware/nanopb
-	url = https://code.google.com/p/nanopb
+	url = https://github.com/nanopb/nanopb.git
 [submodule "submodules/libbicycle"]
 	path = submodules/libbicycle
 	url = git@github.com:oliverlee/libbicycle
