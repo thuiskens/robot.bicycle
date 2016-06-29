@@ -43,8 +43,8 @@ namespace gui {
 
 const int minwidth = 400;
 const int minheight = 400;
-const int maxwidth = 1920;
-const int maxheight = 1200;
+//const int maxwidth = 1920;
+//const int maxheight = 1200;
 MainWindow::MainWindow(const QVector<QString> & data_filenames, QWidget *parent) :
     QMainWindow(parent),
     fields_{"time", "acc_x", "acc_y", "acc_z",

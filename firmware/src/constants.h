@@ -6,15 +6,20 @@
 #include "matrix.h"
 
 namespace constants {
+#if defined(__GNUG__) && !defined(__clang__)
+#define const_t constexpr
+#else
+#define const_t const
+#endif
 
-constexpr float pi_over_four = std::atan(1.0f);
-constexpr float pi_over_two = 2.0f * std::atan(1.0f);
-constexpr float pi = 4.0f * std::atan(1.0f);
-constexpr float three_pi_over_two = 6.0f * std::atan(1.0f);
-constexpr float two_pi = 8.0f * std::atan(1.0f);
-constexpr float rad_per_degree = pi / 180.0f;
-constexpr float degree_per_rad = 180.0f / pi;
-constexpr float e = std::exp(1.0f);
+const_t float pi_over_four = std::atan(1.0f);
+const_t float pi_over_two = 2.0f * std::atan(1.0f);
+const_t float pi = 4.0f * std::atan(1.0f);
+const_t float three_pi_over_two = 6.0f * std::atan(1.0f);
+const_t float two_pi = 8.0f * std::atan(1.0f);
+const_t float rad_per_degree = pi / 180.0f;
+const_t float degree_per_rad = 180.0f / pi;
+const_t float e = std::exp(1.0f);
 constexpr float g = 9.81f;
 
 constexpr uint32_t PWM_ARR = 0xFFFE;
@@ -47,7 +52,7 @@ constexpr control::Matrix<float, 3, 1> b_acc = {{
 // Gyroscope sensitivity is assumed to be as published in MPU6050 datasheet
 // this assumes all three axes have equal sensitivity and that there is no
 // cross axis sensitivity
-constexpr float S_gyro = rad_per_degree / 131.0f;
+const_t float S_gyro = rad_per_degree / 131.0f;
 
 // Gyroscope biases
 constexpr control::Matrix<float, 3, 1> b_gyro = {{
