@@ -20,12 +20,6 @@ if(ROBOT_BICYCLE_BUILD_DATA_EXPLORER)
     if(NOT PROTOBUF_PROTOC_EXECUTABLE)
         message(SEND_ERROR "Google protobuf compiler not found.")
     endif()
-
-    if(NOT CMAKE_COMPILER_IS_GNUCXX)
-        message(FATAL_ERROR
-            "GCC is the only supported compiler due to use of cmath functions as constant expressions.")
-    endif()
-
     protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS sample.proto)
 
     set(QT_HEADERS mainwindow.h qcustomplot.h)
