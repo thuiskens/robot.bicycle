@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include "bicycle.h"
+#include <vector>
 
 struct model_data {
   double theta_R_dot;
