@@ -11,6 +11,7 @@
 #include "system_commands.h"
 #include "vector_table.h"
 #include "motor_controller.h"
+#include "gitsha.h"
 
 #if defined(BUILD_TEST)
 #include "test.h"
@@ -218,9 +219,10 @@ int main()
   chEvtRegister(&removed_event, &el1, 1);
   static WORKING_AREA(waShell, 2048);
   while (true) {
-    if (!shelltp)
+    if (!shelltp) {
       shelltp = shellCreateStatic(&shell_cfg1, waShell, sizeof(waShell), NORMALPRIO);
-    else if (chThdTerminated(shelltp)) {
+      chprintf(shell_cfg1.sc_channel, "Running firmware version %s\r\n", g_GITSHA1);
+    } else if (chThdTerminated(shelltp)) {
       shelltp = NULL;           /* Triggers spawning of a new shell.        */
     }
     chEvtDispatch(evhndl, chEvtWaitOne(ALL_EVENTS));
