@@ -74,8 +74,7 @@ endif()
 # Flags for compilation and linking.
 set(WARN_FLAGS "-Wall -Wextra")
 set(OPT_FLAGS0 "-fomit-frame-pointer -falign-functions=16 -ffunction-sections")
-set(OPT_FLAGS1 "-fdata-sections -fno-common")
-# -flto"  linking fails with LTO enabled
+set(OPT_FLAGS1 "-fdata-sections -fno-common -flto")
 set(COMMON_FLAGS "${WARN_FLAGS} ${OPT_FLAGS0} ${OPT_FLAGS1}")
 set(CMAKE_C_FLAGS
     "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -Wstrict-prototypes")
@@ -84,16 +83,9 @@ set(CMAKE_CXX_FLAGS
 set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -fno-stack-protector -std=c++11")
 set(CMAKE_EXE_LINKER_FLAGS
-    "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
+    "${CMAKE_EXE_LINKER_FLAGS} ${OPT_FLAGS0} ${OPT_FLAGS1} -Wl,--gc-sections")
 set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} --specs=nosys.specs")
-
-# Don't include compiler flags when linking
-set(CMAKE_C_LINK_EXECUTABLE
-    "<CMAKE_C_COMPILER> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
-set(CMAKE_CXX_LINK_EXECUTABLE
-    "<CMAKE_CXX_COMPILER> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
-
 
 ## Define module path
 # We need to search for python 2.7+ in order to generate nanopb sources
@@ -150,6 +142,8 @@ include(${CHIBIOS_CMAKE_DIR}/ext/fatfs.cmake)
 set(CHIBIOS_VARIOUS_SRC
     ${CHIBIOS_SOURCE_DIR}/os/various/chprintf.c
     ${CHIBIOS_SOURCE_DIR}/os/various/chprintf.h
+    ${CHIBIOS_SOURCE_DIR}/os/various/cpp_wrappers/ch.cpp
+    ${CHIBIOS_SOURCE_DIR}/os/various/cpp_wrappers/ch.hpp
     ${CHIBIOS_SOURCE_DIR}/os/various/evtimer.c
     ${CHIBIOS_SOURCE_DIR}/os/various/evtimer.h
     ${CHIBIOS_SOURCE_DIR}/os/various/shell.c

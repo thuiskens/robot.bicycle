@@ -50,7 +50,7 @@ This project also depends on Matlab.
 To compile the code that runs on the microcontroller, the following toolchain
 is used:
 [GNU Tools for ARM Embedded Processors](https://launchpad.net/gcc-arm-embedded)
-The version used is 4.9-2014-q4-major.
+The version used is 5-2016-q1-update.
 
 As most computers will be running a 64-bit kernel, libraries for ia32/i386
 architecture will need to be installed if not already. For recent versions of
