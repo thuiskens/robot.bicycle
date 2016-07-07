@@ -3,6 +3,11 @@ project(ROBOT_BICYCLE CXX C)
 
 set(CMAKE_MODULE_PATH ${ROBOT_BICYCLE_SOURCE_DIR}/cmake/Modules)
 
+# get git sha1 https://stackoverflow.com/questions/1435953/how-can-i-pass-git-sha1-to-compiler-as-definition-using-cmake
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+add_definitions("-DGIT_SHA=${GIT_SHA1}")
+
 # require c++11 support in C++ compiler
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 ${CMAKE_CXX_FLAGS}")
 

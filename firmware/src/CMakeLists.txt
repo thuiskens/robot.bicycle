@@ -1,3 +1,5 @@
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/gitsha.cpp.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/gitsha.cpp" @ONLY)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -13,6 +15,7 @@ set(PROJECT_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/ffconf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/filter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fork_motor_controller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gitsha.h
     ${CMAKE_CURRENT_SOURCE_DIR}/halconf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/initialization.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrix.h
@@ -36,6 +39,7 @@ set(PROJECT_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/control_loop.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fork_motor_controller.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gain_schedule.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/gitsha.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/initialization.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/motor_controller.cpp
