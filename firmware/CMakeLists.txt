@@ -44,7 +44,12 @@ endmacro()
 # Provide location of generated gain schedule files as an input argument.
 # These are actually created before the configure step by the root CMake
 # script.
-if(GENERATED_SCHEDULE_SOURCE_DIR)
+if(NOT GENERATED_SCHEDULE_SOURCE_DIR)
+    set(GENERATED_SCHEDULE_SOURCE_DIR
+        "${CMAKE_CURRENT_SOURCE_DIR}/../build/design/generated"
+        CACHE PATH "Directory of generated gain schedule files.")
+endif()
+if(EXISTS ${GENERATED_SCHEDULE_SOURCE_DIR})
     file(GLOB GENERATED_SRC
         ${GENERATED_SCHEDULE_SOURCE_DIR}/*.cpp
         ${GENERATED_SCHEDULE_SOURCE_DIR}/*.h)
