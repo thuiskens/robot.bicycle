@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(ROBOT_BICYCLE_FIRMWARE CXX C)
+project(ROBOT_BICYCLE_FIRMWARE CXX C ASM)
 
 ## Define flags used with different build options
 # Clear existing compilation and linking flags
@@ -57,12 +57,13 @@ else()
     message(SEND_ERROR
         "Directory for generated gain schedule files not specified.")
 endif()
+include_directories(${GENERATED_SCHEDULE_SOURCE_DIR})
 
 # Debug/Release flags. Force values as the user should not be able to override.
 # Release uses MINRELSIZE.
-set(CMAKE_C_FLAGS_DEBUG "-ggdb3 -O0" CACHE
+set(CMAKE_C_FLAGS_DEBUG "-gdwarf-4 -fvar-tracking-assignments -O0" CACHE
     STRING "Flags used by the compiler during debug builds." FORCE)
-set(CMAKE_CXX_FLAGS_DEBUG "-ggdb3 -O0" CACHE
+set(CMAKE_CXX_FLAGS_DEBUG "-gdwarf-4 -fvar-tracking-assignments -O0" CACHE
     STRING "Flags used by the compiler during debug builds." FORCE)
 set(CMAKE_C_FLAGS_RELEASE "-Os -DNDEBUG" CACHE
     STRING "Flags used by the compiler during release builds." FORCE)
@@ -76,21 +77,29 @@ if(NOT CMAKE_BUILD_TYPE)
     message("CMAKE_BUILD_TYPE not set. Using ${CMAKE_BUILD_TYPE.}")
 endif()
 
+option(CHIBIOS_USE_LINK_GC "Remove unused code and data when linking." TRUE)
+option(CHIBIOS_USE_LTO "Perform Link Time Optimization." FALSE)
+
 # Flags for compilation and linking.
 set(WARN_FLAGS "-Wall -Wextra")
-set(OPT_FLAGS0 "-fomit-frame-pointer -falign-functions=16 -ffunction-sections")
-set(OPT_FLAGS1 "-fdata-sections -fno-common -flto")
-set(COMMON_FLAGS "${WARN_FLAGS} ${OPT_FLAGS0} ${OPT_FLAGS1}")
+set(OPT_FLAGS "-fomit-frame-pointer -falign-functions=16")
+
+if(CHIBIOS_USE_LINK_GC)
+    set(OPT_FLAGS
+        "${OPT_FLAGS} -ffunction-sections -fdata-sections -fno-common -fno-builtin")
+    set(LD_FLAGS "-Wl,--gc-sections")
+endif(CHIBIOS_USE_LINK_GC)
+
+if(CHIBIOS_USE_LTO)
+    set(OPT_FLAGS "${OPT_FLAGS} -flto")
+endif(CHIBIOS_USE_LTO)
+
+set(COMMON_FLAGS "${WARN_FLAGS} ${OPT_FLAGS}")
 set(CMAKE_C_FLAGS
     "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -Wstrict-prototypes")
-set(CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} -fno-rtti -fno-exceptions")
-set(CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -fno-stack-protector -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPT_FLAGS} -fno-rtti -fno-exceptions -std=c++11 ${WARN_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS
-    "${CMAKE_EXE_LINKER_FLAGS} ${OPT_FLAGS0} ${OPT_FLAGS1} -Wl,--gc-sections")
-set(CMAKE_EXE_LINKER_FLAGS
-    "${CMAKE_EXE_LINKER_FLAGS} --specs=nosys.specs")
+    "${CMAKE_EXE_LINKER_FLAGS} ${OPT_FLAGS} -nostartfiles --specs=nano.specs --specs=nosys.specs ${LD_FLAGS}")
 
 ## Define module path
 # We need to search for python 2.7+ in order to generate nanopb sources
