@@ -131,6 +131,7 @@ static const ShellCommand commands[] = {
   {"thresh", hardware::ForkMotorController::set_thresholds_shell},
   {"disturb", hardware::ForkMotorController::disturb_shell},
   {"speed_limit", hardware::RearMotorController::speed_limit_shell},
+  {"torque", hardware::RearMotorController::torque_shell}, // use: torque = disable rear motor; torque {-+}xx.xx = command a rear motor torque [Nm]
   {"l_thresh", hardware::ControlLoop::set_lean_threshold_shell},
   {"yaw_rate", hardware::set_reference_shell<hardware::fork>},
   {"speed", hardware::set_reference_shell<hardware::rear_wheel>},
