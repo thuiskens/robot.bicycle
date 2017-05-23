@@ -98,6 +98,14 @@ void RearMotorController::update(Sample & s)
 
 	// Log the (saturated) commanded torque
 	s.motor_torque.rear_wheel = m_.get_torque();              // saturated torque
+	
+	// Illuminate the front (yellow) LED when the rear torque is directed forwards
+	MEM_ADDR(BITBAND(reinterpret_cast<uint32_t>(&(GPIOF->ODR)),
+                   GPIOF_STEER_LED)) = m_.current_direction();
+	
+	// Illuminate the rear (green) LED when the rear torque is directed backwards
+	MEM_ADDR(BITBAND(reinterpret_cast<uint32_t>(&(GPIOF->ODR)),
+                   GPIOF_LEAN_LED)) = !m_.current_direction();
 
   // update distance travelled
   distance_ += static_cast<int16_t>(s.encoder.rear_wheel_count -

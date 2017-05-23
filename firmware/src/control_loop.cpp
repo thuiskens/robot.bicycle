@@ -187,8 +187,8 @@ msg_t ControlLoop::exec(const char * file_name)
     // Put the sample in to the buffer
     bool encode_failure = !sample_buffer.insert(s);
 
-    // Illuminate the lean and steer LED's based on latest sample
-    illuminate_lean_steer(s);
+//    // Illuminate the lean and steer LED's based on latest sample
+//    illuminate_lean_steer(s);
 
     // Clear the sample for the next iteration
     // The first time through the loop, computation_time will be logged as zero,
