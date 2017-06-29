@@ -31,7 +31,7 @@ RearMotorController::RearMotorController()
   system_time_prev_{0}, rear_wheel_count_prev_{0},
   low_pass_filter_{n0, n1, d0, constants::loop_period_s},
   dthetadt_array_{{}}, dthetadt_elem_{0},
-  distance_{0.0f}, distance_limit_{0.0f}
+  distance_{0.0f}, distance_limit_{0.0f}, pi_controller_on_{true}
 {
   instances[rear_wheel] = this;
   e_.set_count(0);
@@ -44,6 +44,7 @@ RearMotorController::~RearMotorController()
 
 void RearMotorController::set_reference(float speed)
 {
+  pi_controller_on_ = true; // turn on the PI controller
   float theta_R_dot_command_new = speed / -constants::wheel_radius;
   theta_R_dot_command_ = theta_R_dot_command_new;
 }
@@ -86,25 +87,32 @@ void RearMotorController::update(Sample & s)
   low_pass_filter_.update(dthetadt);
   s.encoder.rear_wheel_rate = low_pass_filter_.output(dthetadt);
 
-//  const float error = theta_R_dot_command_ - s.encoder.rear_wheel_rate;
-//  s.motor_torque.desired_rear_wheel = K_ * error + integrator_state_;
+  // Update the torque if tracking the commanded speed and log the desired and saturated torque
+  if (pi_controller_on_) // tracking commanded speed using PI controller
+  {
+    const float error = theta_R_dot_command_ - s.encoder.rear_wheel_rate;
+    s.motor_torque.desired_rear_wheel = K_ * error + integrator_state_;
 
-//  m_.set_torque(s.motor_torque.desired_rear_wheel);         // desired torque
-//  s.motor_torque.rear_wheel = m_.get_torque();              // saturated torque
+    m_.set_torque(s.motor_torque.desired_rear_wheel);         // desired torque
+    s.motor_torque.rear_wheel = m_.get_torque();              // saturated torque
 
-//  // update integrator state if torque not saturating
-//  if (s.motor_torque.rear_wheel == s.motor_torque.desired_rear_wheel)
-//    integrator_state_ += K_ / Ti_ * error * dt;
+    // update integrator state if torque not saturating
+    if (s.motor_torque.rear_wheel == s.motor_torque.desired_rear_wheel)
+      integrator_state_ += K_ / Ti_ * error * dt;
+  }
+  else                             // applying constant torque commanded by user
+  {
+    // Log the desired and saturated torque
+    s.motor_torque.desired_rear_wheel = 0.0f; // desired torque not available here
+    s.motor_torque.rear_wheel = m_.get_torque();              // saturated torque
+  }
 
-	// Log the (saturated) commanded torque
-	s.motor_torque.rear_wheel = m_.get_torque();              // saturated torque
-	
-	// Illuminate the front (yellow) LED when the rear torque is directed forwards
-	MEM_ADDR(BITBAND(reinterpret_cast<uint32_t>(&(GPIOF->ODR)),
+  // Illuminate the front (yellow) LED when the rear torque is directed forwards
+  MEM_ADDR(BITBAND(reinterpret_cast<uint32_t>(&(GPIOF->ODR)),
                    GPIOF_STEER_LED)) = m_.current_direction();
-	
-	// Illuminate the rear (green) LED when the rear torque is directed backwards
-	MEM_ADDR(BITBAND(reinterpret_cast<uint32_t>(&(GPIOF->ODR)),
+
+  // Illuminate the rear (green) LED when the rear torque is directed backwards
+  MEM_ADDR(BITBAND(reinterpret_cast<uint32_t>(&(GPIOF->ODR)),
                    GPIOF_LEAN_LED)) = !m_.current_direction();
 
   // update distance travelled
@@ -166,43 +174,40 @@ void RearMotorController::speed_limit_shell(BaseSequentialStream *chp,
 // How to use (in PuTTY or another serial program):
 // torque = disable the rear motor
 // torque {-+}xx.xx = command a rear motor torque [Nm], examples:
-// 	torque +05.00 = command a rear motor torque of +5 Nm
-// 	torque -05.00 = command a rear motor torque of -5 Nm
+//   torque +05.00 = command a rear motor torque of +5 Nm
+//   torque -05.00 = command a rear motor torque of -5 Nm
 void RearMotorController::torque_shell(BaseSequentialStream *chp, int argc, char *argv[])
 {
-	if (argc == 0)
-	{
-		// Create an object pointer to operate on
-		RearMotorController* fmc = reinterpret_cast<RearMotorController*>(instances[rear_wheel]);
-		
-		// Disable the rear motor
-		fmc->disable();
-		
-		// Send a message to the user
-		chprintf(chp, "Rear wheel motor disabled.\r\n");
-	}
-	else if (argc == 1)
-	{
-		// Create an object pointer to operate on
-		RearMotorController* fmc = reinterpret_cast<RearMotorController*>(instances[rear_wheel]);
-		
-		// Enable the rear motor
-		fmc->enable();
-		
-		// Convert the input argument to the commanded torque
-		float commanded_torque = tofloat(argv[0]);
-		
-		// Set the commanded torque
-		fmc->m_.set_torque(commanded_torque);
-		
-		// Send a message to the user
-		float saturated_torque = fmc->m_.get_torque();
-		chprintf(chp, "Rear wheel motor torque set to %f\r\n", saturated_torque);
-	}
-	else
-	{
-		chprintf(chp, "Invalid usage.\r\n");
-	}
+  if (argc == 0)      // 0 input arguments
+  {
+    // Retrieve a pointer to the RearMotorController object
+    RearMotorController* fmc = reinterpret_cast<RearMotorController*>(instances[rear_wheel]);
+
+    // Disable the rear motor and send a message to the user
+    fmc->disable();
+    chprintf(chp, "Rear wheel motor disabled.\r\n");
+  }
+  else if (argc == 1) // 1 input argument
+  {
+    // Retrieve a pointer to the RearMotorController object
+    RearMotorController* fmc = reinterpret_cast<RearMotorController*>(instances[rear_wheel]);
+
+    // Turn off the PI controller
+    fmc->pi_controller_on_ = false;
+
+    // Set torque commanded by user
+    fmc->enable();                             // enable the rear motor
+    float commanded_torque = tofloat(argv[0]); // convert the char* input to a float
+    fmc->m_.set_torque(commanded_torque);      // set the commanded torque
+
+    // Send a message to the user
+    float saturated_torque = fmc->m_.get_torque();
+    chprintf(chp, "Rear wheel motor torque set to %f\r\n", saturated_torque);
+  }
+  else                // more than 1 input argument, thus invalid use
+  {
+    chprintf(chp, "Invalid usage.\r\n");
+  }
 }
 
 } // namespace hardware

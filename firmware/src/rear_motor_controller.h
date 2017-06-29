@@ -41,6 +41,8 @@ class RearMotorController : public MotorController {
 
   float distance_;
   float distance_limit_;
+
+  bool pi_controller_on_;
 };
 
 } // namespace hardware
