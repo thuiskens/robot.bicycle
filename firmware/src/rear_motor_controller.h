@@ -21,6 +21,7 @@ class RearMotorController : public MotorController {
   virtual void update(Sample & s);
   static void speed_limit_shell(BaseSequentialStream *chp, int argc, char *argv[]);
   static void torque_shell(BaseSequentialStream *chp, int argc, char *argv[]);
+  static void gains_shell(BaseSequentialStream *chp, int argc, char *argv[]);
 
  private:
   void set_distance_limit(float distance);

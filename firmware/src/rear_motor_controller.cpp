@@ -100,7 +100,7 @@ void RearMotorController::update(Sample & s)
     if (s.motor_torque.rear_wheel == s.motor_torque.desired_rear_wheel)
       integrator_state_ += K_ / Ti_ * error * dt;
   }
-  else                             // applying constant torque commanded by user
+  else                   // applying constant torque commanded by user
   {
     // Log the desired and saturated torque
     s.motor_torque.desired_rear_wheel = 0.0f; // desired torque not available here
@@ -171,11 +171,11 @@ void RearMotorController::speed_limit_shell(BaseSequentialStream *chp,
 }
 
 // torque_shell - command a constant rear motor torque
-// How to use (in PuTTY or another serial program):
-// torque = disable the rear motor
-// torque {-+}xx.xx = command a rear motor torque [Nm], examples:
-//   torque +05.00 = command a rear motor torque of +5 Nm
-//   torque -05.00 = command a rear motor torque of -5 Nm
+//  How to use (in PuTTY or another serial program):
+//    torque = disable the rear motor
+//    torque [-|+][x...][.][y...] = command a rear motor torque [N*m], examples:
+//      torque 5 = command a rear motor torque of 5 N*m (backwards)
+//      torque -5.6 = command a rear motor torque of -5.6 N*m (forwards)
 void RearMotorController::torque_shell(BaseSequentialStream *chp, int argc, char *argv[])
 {
   if (argc == 0)      // 0 input arguments
@@ -205,6 +205,45 @@ void RearMotorController::torque_shell(BaseSequentialStream *chp, int argc, char
     chprintf(chp, "Rear wheel motor torque set to %f\r\n", saturated_torque);
   }
   else                // more than 1 input argument, thus invalid use
+  {
+    chprintf(chp, "Invalid usage.\r\n");
+  }
+}
+
+// gains_shell - change the rear motor controller gains
+//  How to use (in PuTTY or another serial program):
+//    gains [-|+][x...][.][y...] = change the K gain, for example:
+//      gains 50 = change K to 50
+//    gains [-|+][x...][.][y...] [-|+][x...][.][y...] = change the K and Ti gains, e.g.:
+//      gains 50 2000 = change K to 50 and Ti to 2000
+void RearMotorController::gains_shell(BaseSequentialStream *chp, int argc, char *argv[])
+{
+  if ((argc == 1) || (argc == 2)) // 1 or 2 input arguments -> change the K gain
+  {
+    // Retrieve a pointer to the RearMotorController object
+    RearMotorController* rmc = reinterpret_cast<RearMotorController*>(instances[rear_wheel]);
+    
+    // Save the previous K gain and change it to the specified value
+    float K_old = rmc->K_;
+    float K_new = tofloat(argv[0]);
+    rmc->K_ = K_new;
+    
+    // Send a message to the user
+    chprintf(chp, "Rear motor controller gain K changed from %f to %f", K_old, K_new);
+    
+    // Also change the Ti gain if a second argument is given
+    if (argc == 2) // 2 input arguments -> also change the Ti gain
+    {
+      // Save the previous Ti gain and change it to the specified value
+      float Ti_old = rmc->Ti_;
+      float Ti_new = tofloat(argv[1]);
+      rmc->Ti_ = Ti_new;
+      
+      // Send a message to the user
+      chprintf(chp, "Rear motor controller gain Ti changed from %f to %f", Ti_old, Ti_new);
+    } // if (argc == 2)
+  } // if ((argc == 1) || (argc == 2))
+  else // not 1 or 2 input arguments, thus invalid use
   {
     chprintf(chp, "Invalid usage.\r\n");
   }
