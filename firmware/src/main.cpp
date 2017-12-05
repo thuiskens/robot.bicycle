@@ -11,6 +11,7 @@
 #include "system_commands.h"
 #include "vector_table.h"
 #include "motor_controller.h"
+#include "textutilities.h"
 
 #if defined(BUILD_TEST)
 #include "test.h"
@@ -118,11 +119,17 @@ static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
   } while (tp != NULL);
 }
 
+static void cmd_tofloat(BaseSequentialStream *chp, int argc, char* argv[]) {
+  for (int ind = 0; ind < argc; ind++)
+    chprintf(chp, "tofloat(\"%s\") = %f\r\n", argv[ind], tofloat(argv[ind]));
+}
+
 static const ShellCommand commands[] = {
   {"collect", hardware::ControlLoop::shell_command}, // enable/disable data collection and control
   {"disable", SystemCommands::disable_controllers},
   {"reset", SystemCommands::reset},
   {"threads", cmd_threads},
+  {"tofloat", cmd_tofloat},
   {"calibrate", calibration::fork_encoder_calibration},
   {"homefork", calibration::fork_encoder_home},
   // TODO: move all YawRateController static functions elsehwere
